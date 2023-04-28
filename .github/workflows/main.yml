@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     env:
-      RELEASENAME: 'v$(cat RELEASENAME)'
+      RELEASENAME: ${{ cat RELEASENAME }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -15,7 +15,6 @@ jobs:
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        # Filename is RELEASENAME + .zip
         filename: '${{ env.RELEASENAME }}.zip'
         exclusions: "*.git* /*node_modules/*"
     - name: Upload Release
