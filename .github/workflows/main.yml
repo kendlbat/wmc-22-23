@@ -4,13 +4,14 @@ on:
       - "*"
 jobs:
   build:
-    env:
-      RELEASENAME: ${{ cat RELEASENAME }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@main
+    - name: Read RELEASENAME File
+      id: releasename
+      run: echo ::set-output name=RELEASENAME::$(cat RELEASENAME)
     - name: Archive Release
       uses: thedoctor0/zip-release@0.7.1
       with:
