@@ -1,6 +1,6 @@
 # WMC 2022 - 2023
-Tobias Kendlbacher
-3BHIF
+Tobias Kendlbacher  
+3BHIF  
 [MIT License](LICENSE)
 
 ## How to release (Abgabe)
