@@ -1,0 +1,47 @@
+### HTL Villach
+PUT http://localhost:3000/api/schools/202417
+Content-Type: application/json
+
+{
+    "id": 202417,
+    "title": "HTL Villach",
+    "address": {
+        "zip-code": 9500,
+        "city": "Villach",
+        "street": "Tschinowitscherweg 5"
+    },
+    "type": "BHS"
+}
+
+### BG/BRG Lienz
+PUT http://localhost:3000/api/schools/707016
+Content-Type: application/json
+
+{
+    "id": 707016,
+    "title": "BG/BRG Lienz",
+    "address": {
+        "zip-code": 9900,
+        "city": "Lienz"
+    },
+    "type": "AHS"
+}
+
+### VS Oberdrauburg
+PUT http://localhost:3000/api/schools/206381
+Content-Type: application/json
+
+{
+    "id": "206381",
+    "title": "VS Oberdrauburg",
+    "type": "Andere"
+}
+
+### GET All
+GET http://localhost:3000/api/schools
+
+### GET HTL Villach
+GET http://localhost:3000/api/schools/202417
+
+### DELETE HTL Villach
+DELETE http://localhost:3000/api/schools/202417

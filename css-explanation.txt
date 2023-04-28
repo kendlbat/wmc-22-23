@@ -1,0 +1,44 @@
+col-md-3
+    Die Klasse bedeutet, dass die Spalte 3 von 12 verfügbaren Spaltenbreiten einnimmt
+    und diese Breite ab dem md-Breakpoint (768px) beibehält.
+
+col-lg-2
+    Legt die Spaltenbreite für große Viewports (ab 992px) fest.
+    Die Klasse bedeutet, dass die Spalte 2 von 12 verfügbaren Spaltenbreiten einnimmt.
+
+d-md-block
+    Setzt die Display-Property eines Elements auf block ab dem md-Breakpoint (768px).
+    Das bedeutet, dass das Element die gesamte Breite seines Elternelements einnimmt
+    und einen Zeilenumbruch vor und nach sich erzeugt.
+
+px-3
+    Setzt den horizontalen Abstand (padding) eines Elements auf (0.5 $spacer)
+
+mt-4
+    Setzt den oberen Abstand (margin) eines Elements auf (1 $spacer)
+
+mb-1
+    Setzt den unteren Abstand (margin) eines Elements auf (0.25 $spacer)
+
+ms-sm-auto
+    Setzt den linken (also den Startabstand; bei ltr schreibrichtung rechten) Abstand (margin) eines Elements auf auto ab dem sm-Breakpoint (576px).
+
+col-lg-10
+    Legt die Spaltenbreite für große Viewports (ab 992px) fest.
+    Die Klasse bedeutet, dass die Spalte 10 von 12 verfügbaren Spaltenbreiten einnimmt.
+
+px-md-4
+    Setzt den horizontalen Abstand (padding) eines Elements auf (1 $spacer) ab dem md-Breakpoint (768px).
+
+text-muted
+    Setzt die Farbe eines Elements auf $text-muted.
+
+text-uppercase
+    Setzt den Text eines Elements in Großbuchstaben um.
+
+d-flex
+    Setzt die Display-Property eines Elements auf flex.
+
+justify-content-between
+    Setzt die Ausrichtung der flex-Items auf space-between.
+

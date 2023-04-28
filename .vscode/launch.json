@@ -1,0 +1,36 @@
+{
+    "compounds": [
+        {
+            "name": "Debug WTA",
+            "configurations": [
+                "nodemon",
+                "[FF] Open WTA"
+            ]
+        }
+    ],
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "[FF] Open WTA",
+            "url": "http://localhost:3000/",
+            "webRoot": "${workspaceFolder}/wwwPublic"
+        },
+        {
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "name": "nodemon",
+            "program": "${workspaceFolder}/server.js",
+            "request": "launch",
+            "restart": true,
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+            "skipFiles": [
+                "<node_internals>/**",
+                "${workspaceFolder}/node_modules/**",
+                "${workspaceFolder}/data/**"
+            ],
+            "type": "node"
+        }
+    ]
+}

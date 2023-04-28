@@ -1,0 +1,28 @@
+### Post tour 1
+
+POST http://localhost:3000/api/tours
+Content-Type: application/json
+
+{
+    "guideName":"Josh Doe",
+    "guideClass":"3BHIF",
+    "startTime":"14:05",
+    "numPersons":"4"
+}
+
+### Post tour 2
+POST http://localhost:3000/api/tours
+Content-Type: application/json
+
+{
+    "guideName":"Mary Doe",
+    "guideClass":"4AHIF",
+    "startTime":"11:05",
+    "numPersons":"1"
+}
+
+### Get one tour
+GET http://localhost:3000/api/tours/7ed741e6-e3ef-4737-80fd-82f9bd938ffb
+
+### Get all tours
+GET http://localhost:3000/api/tours

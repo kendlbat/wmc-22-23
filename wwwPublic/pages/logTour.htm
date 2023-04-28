@@ -1,0 +1,51 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h2 class="h2">Führung erfassen</h2>
+</div>
+<div class="container-md">
+    <form id="logTourForm">
+        <div class="row">
+            <div class="mb-3 col-md-8">
+                <label for="logTourGuide" class="form-label">Guide</label>
+                <input name="guideName" type="text" class="form-control" id="logTourGuide" aria-describedby="logTourGuideHelp" />
+                <div id="logTourGuideHelp" class="form-text">Der Name des Guides...</div>
+            </div>
+        
+            <div class="mb-3 col-md-4 col-6">
+                <label for="logTourClass" class="form-label">Klasse</label>
+                <select id="logTourClass" name="guideClass" class="form-select" aria-label="Klasse">
+                    <option selected>Klasse auswählen</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md col-6">
+                <label for="logTourStartTime" class="form-label">Start</label>
+                <input name="startTime" type="time" class="form-control" id="logTourStartTime" />
+            </div>
+    
+            <div class="mb-3 col-md col-6">
+                <label for="logTourEndTime" class="form-label">Ende</label>
+                <input name="endTime" type="time" class="form-control" id="logTourEndTime" />
+            </div>
+        
+            <div class="mb-3 col-md">
+                <label for="logTourPersonCount" class="form-label">Anzahl Personen</label>
+                <input name="numPersons" type="number" class="form-control" id="logTourPersonCount" />
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="mb-3 col-md col-md-8">
+                <label for="logTourCurrSchool" class="form-label">Aktuelle Schule</label>
+                <select class="form-select" name="currSchool" id="logTourCurrSchool">
+                    <option selected>Schule auswählen</option>
+                </select>
+            </div>
+        </div>
+    
+        <!-- all other form controls go here -->
+        <button type="button" class="btn btn-warning" id="logTourGenerateRandom">Generate fake data</button>
+        <button type="submit" class="btn btn-primary">Erfassen</button>
+    </form>
+
+</div>
