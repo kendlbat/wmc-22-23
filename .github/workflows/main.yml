@@ -17,7 +17,7 @@ jobs:
       with:
         type: 'zip'
         filename: '${{ steps.releasename.outputs.RELEASENAME }}.zip'
-        exclusions: "*.git* /*node_modules/* RELEASENAME create_release.bat"
+        exclusions: "*.git* /*node_modules/* RELEASENAME"
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
