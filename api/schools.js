@@ -76,16 +76,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-    const { id } = req.params;
-
-    if (!fs.existsSync(`${getDataDir()}/${id}.json`)) {
-        res.status(404).json({ error: "School not found" });
-        return;
-    }
-
-    fs.unlinkSync(`${getDataDir()}/${id}.json`);
-
-    res.status(204).send();
+    res.status(300).send();
 });
 
 
