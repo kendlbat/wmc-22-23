@@ -6,9 +6,19 @@ router.use("/classes", require("./classes"));
 router.use("/tours", require("./tours"));
 router.use("/schools", require("./schools"));
 
+function getTourDataDir() {
+    return path.join(process.env.TEST_DATA_DIR ||
+        path.join(__dirname, '..', 'data'), 'tours');
+}
+
 router.get("/toursByStartTime", (req, res) => {
-    res.json(fs.readdirSync(path.join(__dirname, '../data/tours'))
-        .map(file => JSON.parse(fs.readFileSync(path.join(__dirname, `../data/tours/${file}`))))
+    if (Object.keys(req.query).length > 0) {
+        res.status(400).json({ message: "Invalid query" });
+        return;
+    }
+
+    res.json(fs.readdirSync(getTourDataDir())
+        .map(file => JSON.parse(fs.readFileSync(`${getTourDataDir()}/${file}`)))
         .map(tour => {
             const [h, m] = tour.startTime.split(':');
             const floorM = Math.floor(parseInt(m) / 15) * 15;

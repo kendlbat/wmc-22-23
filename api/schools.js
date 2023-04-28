@@ -5,6 +5,11 @@ const router = require('express').Router();
 
 const VALID_TYPES = ["AHS", "BHS", "Mittelschule", "Andere"].map(t => t.toLowerCase());
 
+function getDataDir() {
+    return path.join(process.env.TEST_DATA_DIR ||
+        path.join(__dirname, '..', 'data'), 'schools');
+}
+
 /**
  * 
  * @param {{id: number, title: string, address: {"zip-code": number, city: string, street: string}, type: string}} school 
@@ -13,13 +18,12 @@ const VALID_TYPES = ["AHS", "BHS", "Mittelschule", "Andere"].map(t => t.toLowerC
 function validateSchool(school) {
     if (school.id === undefined || !school.title || !school.type)
         return false;
-    
+
     if (!/[0-9]{6}/g.test(school.id))
         return false;
 
-    if (!school.title.length >= 3)
+    if (school.title.length < 3)
         return false;
-
 
     if (!VALID_TYPES.includes(school.type.toLowerCase()))
         return false;
@@ -46,15 +50,16 @@ router.put("/:id", (req, res) => {
     if (parseInt(school.id) !== parseInt(id))
         return res.status(400).json({ error: "ID mismatch" });
 
-    fs.writeFileSync(path.join(__dirname, `../data/schools/${id}.json`), JSON.stringify(school));
+    fs.writeFileSync(`${getDataDir()}/${id}.json`, JSON.stringify(school));
 
-    res.status(200).json(school);
+    res.status(204).send();
 });
 
 router.get("/", (req, res) => {
-    let schools = fs.readdirSync(path.join(__dirname, '../data/schools'));
+    let schools = fs.readdirSync(getDataDir())
+        .filter(file => file.endsWith(".json"))
+        .map(school => JSON.parse(fs.readFileSync(`${getDataDir()}/${school}`)));
 
-    schools = schools.map(school => JSON.parse(fs.readFileSync(path.join(__dirname, `../data/schools/${school}`))));
 
     res.status(200).json(schools);
 });
@@ -62,33 +67,23 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
     const { id } = req.params;
 
-    if (!/[0-9]{6}/g.test(id)) {
-        res.status(400).json({ error: "Invalid ID" });
-        return;
-    }
-
-    if (!fs.existsSync(path.join(__dirname, `../data/schools/${id}.json`))) {
+    if (!fs.existsSync(`${getDataDir()}/${id}.json`)) {
         res.status(404).json({ error: "School not found" });
         return;
     }
 
-    res.status(200).json(JSON.parse(fs.readFileSync(path.join(__dirname, `../data/schools/${id}.json`))));
+    res.status(200).json(JSON.parse(fs.readFileSync(`${getDataDir()}/${id}.json`)));
 });
 
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
 
-    if (!/[0-9]{6}/g.test(id)) {
-        res.status(400).json({ error: "Invalid ID" });
-        return;
-    }
-
-    if (!fs.existsSync(path.join(__dirname, `../data/schools/${id}.json`))) {
+    if (!fs.existsSync(`${getDataDir()}/${id}.json`)) {
         res.status(404).json({ error: "School not found" });
         return;
     }
 
-    fs.unlinkSync(path.join(__dirname, `../data/schools/${id}.json`));
+    fs.unlinkSync(`${getDataDir()}/${id}.json`);
 
     res.status(204).send();
 });

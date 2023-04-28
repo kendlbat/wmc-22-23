@@ -15,3 +15,5 @@ app.use(API_PREFIX, apiRouter);
 app.listen(port, () => {
   console.log(`working title app listening on port http://localhost:${port}`);
 });
+
+module.exports = app;
