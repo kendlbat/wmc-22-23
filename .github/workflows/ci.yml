@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  citest:
     runs-on: ubuntu-latest
 
     strategy:
