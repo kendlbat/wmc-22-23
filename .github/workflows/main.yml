@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    env:
+      RELEASENAME: 'v$(cat RELEASENAME)'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Archive Release
+      uses: thedoctor0/zip-release@0.7.1
+      with:
+        type: 'zip'
+        # Filename is RELEASENAME + .zip
+        filename: '${{ env.RELEASENAME }}.zip'
+        exclusions: "*.git* /*node_modules/*"
