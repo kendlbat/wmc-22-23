@@ -282,23 +282,49 @@ function generateToursStatisticsTable() {
 
     table.appendChild(thead);
 
+    let everyPossibleStartTime = [];
+    for (let i = 14; i < 18; i++) {
+        ["00", "15", "30", "45"].forEach((minute) => {
+            everyPossibleStartTime.push(`${i.toString().padStart(2, '0')}:${minute}`);
+        });
+    }
+    everyPossibleStartTime.push('18:00');
+
     let tbody = document.createElement('tbody');
+
+    /**
+     * @type {{[time: string]: {valueElement: HTMLTableCellElement, value: number}}}
+     */
+    let tablerows = {};
+
+    everyPossibleStartTime.forEach((time) => {
+        let row = document.createElement('tr');
+        
+        let td = document.createElement('td');
+        td.appendChild(document.createTextNode(time));
+        row.appendChild(td);
+        
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode('0'));
+        row.appendChild(td);
+
+        tablerows[time] = {
+            valueElement: td,
+            value: 0
+        };
+        
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    container.appendChild(table);
+
     getToursStatistics().then((data) => {
         for (let key in data) {
-            let row = document.createElement('tr');
-
-            let td = document.createElement('td');
-            td.appendChild(document.createTextNode(key));
-            row.appendChild(td);
-
-            td = document.createElement('td');
-            td.appendChild(document.createTextNode(data[key]));
-            row.appendChild(td);
-
-            tbody.appendChild(row);
-
-            table.appendChild(tbody);
-            container.appendChild(table);
+            if (tablerows[key]) {
+                tablerows[key].value = data[key];
+                tablerows[key].valueElement.textContent = data[key];
+            }
         }
     });
     

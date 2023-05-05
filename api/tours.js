@@ -34,13 +34,37 @@ function getTourTimeDifference(a, b) {
 }
 
 router.get(`/`, (req, res) => {
-    const tours = fs.readdirSync(getDataDir())
+    let tours = fs.readdirSync(getDataDir())
         .filter(file => file.endsWith(".json"))
         .map(file => JSON.parse(fs.readFileSync(`${getDataDir()}/${file}`)))
         .sort((a, b) => tourTimeCompare(a, b, "startTime"));
 
     // get _page and _limit from query params
-    const { _page, _limit } = req.query;
+    const { _page, _limit, maxNumPersons, minNumPersons } = req.query;
+
+    let parsedMax;
+
+    if (maxNumPersons !== undefined) {
+        parsedMax = parseInt(maxNumPersons);
+        if (isNaN(parsedMax) || parsedMax < 1) {
+            res.status(400).json({ message: "Invalid maxNumPersons" });
+            return;
+        }
+        tours = tours.filter(tour => parseInt(tour["numPersons"]) <= parsedMax);
+    }
+
+    if (minNumPersons !== undefined) {
+        const min = parseInt(minNumPersons);
+        if (isNaN(min) || min < 0) {
+            res.status(400).json({ message: "Invalid minNumPersons" });
+            return;
+        }
+        if (parsedMax !== undefined && min > parsedMax) {
+            res.status(400).json({ message: "minNumPersons must be less than maxNumPersons" });
+            return;
+        }
+        tours = tours.filter(tour => parseInt(tour["numPersons"]) >= min);
+    }
 
     if (_page !== undefined && _limit !== undefined) {
         const page = parseInt(_page);
@@ -94,6 +118,15 @@ router.get("/:id", (req, res) => {
     if (tour) {
         tour["durationInMin"] = getTourTimeDifference(tour["startTime"], tour["endTime"]);
         res.json(tour);
+    } else {
+        res.status(404).json({ message: "Tour not found" });
+    }
+});
+
+router.delete("/:id", (req, res) => {
+    if (fs.existsSync(`${getDataDir()}/${req.params.id}.json`)) {
+        fs.unlinkSync(`${getDataDir()}/${req.params.id}.json`);
+        res.status(204).end();
     } else {
         res.status(404).json({ message: "Tour not found" });
     }

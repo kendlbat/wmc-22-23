@@ -18,6 +18,7 @@ router.get("/toursByStartTime", (req, res) => {
     }
 
     res.json(fs.readdirSync(getTourDataDir())
+        .filter(file => file.endsWith(".json"))
         .map(file => JSON.parse(fs.readFileSync(`${getTourDataDir()}/${file}`)))
         .map(tour => {
             const [h, m] = tour.startTime.split(':');
