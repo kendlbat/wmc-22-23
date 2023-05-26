@@ -35,6 +35,8 @@ function loadPage(page) {
         // hack hack ... https://www.macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous
         requestAnimationFrame(() =>
           requestAnimationFrame(function () {
+            document.querySelector(`.sidebar .nav-link.active`)?.classList?.remove('active');
+            document.querySelector(`.sidebar .nav-link[href="#${page}"]`)?.classList?.add('active');
             if (initFncs[page])
               initFncs[page]();
             attachEventHandler();
