@@ -19,7 +19,7 @@ function attach(element, event, handler) {
 function registerInitFunction() {
     initFncs['tours'] = populateTours;
     initFncs['logTour'] = initLogTourForm;
-    initFncs['tourStats'] = generateToursStatisticsTable;
+    initFncs['tourStats'] = generateToursStatisticsTableAndChart;
 }
 
 /* **************** Application specific funtions ********************** */
@@ -252,7 +252,7 @@ function generateToursTable(tours) {
         td = document.createElement("td");
         td.appendChild(document.createTextNode(tours[i].numPersons));
         row.appendChild(td);
-        
+
         tbody.appendChild(row);
     }
 
@@ -261,15 +261,15 @@ function generateToursTable(tours) {
     return table;
 }
 
-function generateToursStatisticsTable() {
-    let container = document.querySelector('#tourStatsTableContainer');
+function generateToursStatisticsTableAndChart() {
+    let tablecontainer = document.querySelector('#tourStatsTableContainer');
 
     let table = document.createElement('table');
     table.id = 'tourStatsTable';
     table.className = 'table';
 
     let thead = document.createElement('thead');
-    
+
     let th = document.createElement('th');
     th.scope = 'col';
     th.appendChild(document.createTextNode('Startzeit'));
@@ -297,13 +297,33 @@ function generateToursStatisticsTable() {
      */
     let tablerows = {};
 
+    /**
+     * @type {{[time: string]: SVGElement}}}
+     */
+    let chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chart.id = 'tourStatsChart';
+    chart.setAttribute('width', '100%');
+    chart.setAttribute('height', '100%');
+    chart.setAttribute('viewBox', '0 0 1000 1100');
+    chart.setAttribute('preserveAspectRatio', 'none');
+    chart.className = 'chart';
+
+    let xGrid = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    xGrid.id = 'xGrid';
+    xGrid.setAttribute('transform', 'translate(50, 130)');
+
+    let xLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    xLabels.id = 'xLabels';
+    xLabels.setAttribute('transform', 'translate(70, 1030)');
+    xLabels.setAttribute('text-anchor', 'middle');
+
     everyPossibleStartTime.forEach((time) => {
         let row = document.createElement('tr');
-        
+
         let td = document.createElement('td');
         td.appendChild(document.createTextNode(time));
         row.appendChild(td);
-        
+
         td = document.createElement('td');
         td.appendChild(document.createTextNode('0'));
         row.appendChild(td);
@@ -312,20 +332,148 @@ function generateToursStatisticsTable() {
             valueElement: td,
             value: 0
         };
-        
+
+        let xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', '0');
+        xLabel.setAttribute('y', '0');
+        // xLabel.setAttribute('transform', `translate(${everyPossibleStartTime.indexOf(time) * 50}, 0)`);
+        // do the above AND rotate by 45°
+        xLabel.setAttribute('transform', `translate(${everyPossibleStartTime.indexOf(time) * 50}, 10) rotate(-45)`);
+        xLabel.setAttribute('font-size', '24');
+        xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.appendChild(document.createTextNode(time));
+        xLabels.appendChild(xLabel);
+
+        // let xGridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        // xGridLine.setAttribute('x1', '0');
+        // xGridLine.setAttribute('y1', '0');
+        // xGridLine.setAttribute('x2', '0');
+        // xGridLine.setAttribute('y2', '800');
+        // xGridLine.setAttribute('transform', `translate(${everyPossibleStartTime.indexOf(time) * 50}, 0)`);
+        // xGridLine.setAttribute('stroke', 'gray');
+        // xGrid.appendChild(xGridLine);
+
+        // Create x labels
+
         tbody.appendChild(row);
     });
-    
+
+    let xGridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    xGridLine.setAttribute('x1', '0');
+    xGridLine.setAttribute('y1', '0');
+    xGridLine.setAttribute('x2', '0');
+    xGridLine.setAttribute('y2', '870');
+    xGridLine.setAttribute('stroke', 'gray');
+    xGrid.appendChild(xGridLine);
+
+    chart.appendChild(xGrid);
+    chart.appendChild(xLabels);
+
     table.appendChild(tbody);
-    container.appendChild(table);
+    tablecontainer.appendChild(table);
+
+    let bars = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    bars.id = 'bars';
+    bars.setAttribute('transform', 'translate(50, 200)');
+    
 
     getToursStatistics().then((data) => {
+        let biggestValue = Object.values(data).reduce((prev, curr) => {
+            return Math.max(prev, curr);
+        }, 0);
+
+        // Create y labels
+        let yGrid = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        yGrid.classList.add('grid');
+        yGrid.setAttribute('transform', 'translate(10, 0)');
+
+        let yLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        yLabels.id = 'yLabels';
+        yLabels.setAttribute('transform', 'translate(40, -10)');
+
+        // Height per unit of value
+        let perUnit = 200;
+
+        if (biggestValue < 5) {
+            // If less than 5, generate n labels
+
+            perUnit = 1000 / biggestValue;
+
+            for (let i = 0; i <= biggestValue; i++) {
+                let label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', '0');
+                label.setAttribute('y', `${1000 - (i * 200)}`);
+                label.setAttribute('text-anchor', 'end');
+                label.setAttribute('alignment-baseline', 'middle');
+                label.setAttribute('font-size', '40');
+                label.textContent = i;
+                yLabels.appendChild(label);
+
+                let gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                gridLine.setAttribute('x1', '0');
+                gridLine.setAttribute('y1', `${1000 - (i * 200)}`);
+                gridLine.setAttribute('x2', '1000');
+                gridLine.setAttribute('y2', `${1000 - (i * 200)}`);
+                gridLine.setAttribute('stroke', 'gray');
+                gridLine.setAttribute('stroke-width', '2');
+                yGrid.appendChild(gridLine);
+            }
+        } else {
+            // Else generate 5 labels linearly distributed
+            let unit = Math.floor(biggestValue / 4);
+            perUnit = 800 / biggestValue;
+            for (let i = 0; i < 5; i++) {
+                let label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', '0');
+                label.setAttribute('y', `${1000 - (i * 200)}`);
+                label.setAttribute('text-anchor', 'end');
+                label.setAttribute('alignment-baseline', 'middle');
+                label.setAttribute('font-size', '40');
+                label.textContent = Math.round((biggestValue / 4) * i);
+                yLabels.appendChild(label);
+
+                let gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                gridLine.setAttribute('x1', '0');
+                gridLine.setAttribute('y1', `${1000 - (i * 200)}`);
+                gridLine.setAttribute('x2', '890');
+                gridLine.setAttribute('y2', `${1000 - (i * 200)}`);
+                gridLine.setAttribute('stroke', 'gray');
+                gridLine.setAttribute('stroke-width', '2');
+                yGrid.appendChild(gridLine);
+            }
+        }
+
+        // Create bar
+
+
+        chart.appendChild(yLabels);
+        chart.appendChild(yGrid);
+
+        let bars = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        bars.id = 'bars';
+        bars.setAttribute('transform', 'translate(60, 0)');
+
+        console.log(perUnit);
+
         for (let key in data) {
             if (tablerows[key]) {
                 tablerows[key].value = data[key];
                 tablerows[key].valueElement.textContent = data[key];
+
+                let bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                bar.setAttribute('x', `${everyPossibleStartTime.indexOf(key) * 50}`);
+                bar.setAttribute('y', `${1000 - (data[key] * perUnit)}`);
+                bar.setAttribute('width', '30');
+                bar.setAttribute('height', `${data[key] * perUnit}`);
+                bar.setAttribute('fill', '#ffa500');
+                bar.setAttribute('stroke', 'black');
+                bar.setAttribute('stroke-width', '1');
+                bars.appendChild(bar);
             }
         }
+
+        chart.appendChild(bars);
+        document.querySelector('#tourStatsChartContainer').appendChild(chart);
     });
-    
+
 }
