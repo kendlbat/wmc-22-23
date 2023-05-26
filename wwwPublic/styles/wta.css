@@ -47,6 +47,10 @@ body {
   color: #727272;
 }
 
+.sidebar .nav-link:not(.active) {
+  filter: grayscale(100%);
+}
+
 .sidebar .nav-link.active {
   color: #2470dc;
 }
