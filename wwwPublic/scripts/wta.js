@@ -304,17 +304,17 @@ function generateToursStatisticsTableAndChart() {
     chart.id = 'tourStatsChart';
     chart.setAttribute('width', '100%');
     chart.setAttribute('height', '100%');
-    chart.setAttribute('viewBox', '0 0 1000 1100');
+    chart.setAttribute('viewBox', '0 0 1100 1100');
     chart.setAttribute('preserveAspectRatio', 'none');
-    chart.className = 'chart';
+    chart.setAttribute('class', 'chart col-12 col-lg-6');
 
     let xGrid = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     xGrid.id = 'xGrid';
-    xGrid.setAttribute('transform', 'translate(50, 130)');
+    xGrid.setAttribute('transform', 'translate(150, 130)');
 
     let xLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     xLabels.id = 'xLabels';
-    xLabels.setAttribute('transform', 'translate(70, 1030)');
+    xLabels.setAttribute('transform', 'translate(170, 1030)');
     xLabels.setAttribute('text-anchor', 'middle');
 
     everyPossibleStartTime.forEach((time) => {
@@ -374,8 +374,8 @@ function generateToursStatisticsTableAndChart() {
 
     let bars = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     bars.id = 'bars';
-    bars.setAttribute('transform', 'translate(50, 200)');
-    
+    bars.setAttribute('transform', 'translate(150, 200)');
+
 
     getToursStatistics().then((data) => {
         let biggestValue = Object.values(data).reduce((prev, curr) => {
@@ -385,11 +385,11 @@ function generateToursStatisticsTableAndChart() {
         // Create y labels
         let yGrid = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         yGrid.classList.add('grid');
-        yGrid.setAttribute('transform', 'translate(10, 0)');
+        yGrid.setAttribute('transform', 'translate(110, 0)');
 
         let yLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         yLabels.id = 'yLabels';
-        yLabels.setAttribute('transform', 'translate(40, -10)');
+        yLabels.setAttribute('transform', 'translate(140, -10)');
 
         // Height per unit of value
         let perUnit = 200;
@@ -397,51 +397,31 @@ function generateToursStatisticsTableAndChart() {
         if (biggestValue < 5) {
             // If less than 5, generate n labels
 
-            perUnit = 1000 / biggestValue;
-
-            for (let i = 0; i <= biggestValue; i++) {
-                let label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', '0');
-                label.setAttribute('y', `${1000 - (i * 200)}`);
-                label.setAttribute('text-anchor', 'end');
-                label.setAttribute('alignment-baseline', 'middle');
-                label.setAttribute('font-size', '40');
-                label.textContent = i;
-                yLabels.appendChild(label);
-
-                let gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                gridLine.setAttribute('x1', '0');
-                gridLine.setAttribute('y1', `${1000 - (i * 200)}`);
-                gridLine.setAttribute('x2', '1000');
-                gridLine.setAttribute('y2', `${1000 - (i * 200)}`);
-                gridLine.setAttribute('stroke', 'gray');
-                gridLine.setAttribute('stroke-width', '2');
-                yGrid.appendChild(gridLine);
-            }
-        } else {
-            // Else generate 5 labels linearly distributed
-            let unit = Math.floor(biggestValue / 4);
-            perUnit = 800 / biggestValue;
-            for (let i = 0; i < 5; i++) {
-                let label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', '0');
-                label.setAttribute('y', `${1000 - (i * 200)}`);
-                label.setAttribute('text-anchor', 'end');
-                label.setAttribute('alignment-baseline', 'middle');
-                label.setAttribute('font-size', '40');
-                label.textContent = Math.round((biggestValue / 4) * i);
-                yLabels.appendChild(label);
-
-                let gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                gridLine.setAttribute('x1', '0');
-                gridLine.setAttribute('y1', `${1000 - (i * 200)}`);
-                gridLine.setAttribute('x2', '890');
-                gridLine.setAttribute('y2', `${1000 - (i * 200)}`);
-                gridLine.setAttribute('stroke', 'gray');
-                gridLine.setAttribute('stroke-width', '2');
-                yGrid.appendChild(gridLine);
-            }
+            biggestValue = 5;
         }
+        // Else generate 5 labels linearly distributed
+        let unit = Math.floor(biggestValue / 4);
+        perUnit = 800 / biggestValue;
+        for (let i = 0; i < 5; i++) {
+            let label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', '0');
+            label.setAttribute('y', `${1000 - (i * 200)}`);
+            label.setAttribute('text-anchor', 'end');
+            label.setAttribute('alignment-baseline', 'middle');
+            label.setAttribute('font-size', '40');
+            label.textContent = (biggestValue / 4) * i;
+            yLabels.appendChild(label);
+
+            let gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            gridLine.setAttribute('x1', '0');
+            gridLine.setAttribute('y1', `${1000 - (i * 200)}`);
+            gridLine.setAttribute('x2', '890');
+            gridLine.setAttribute('y2', `${1000 - (i * 200)}`);
+            gridLine.setAttribute('stroke', 'gray');
+            gridLine.setAttribute('stroke-width', '2');
+            yGrid.appendChild(gridLine);
+        }
+
 
         // Create bar
 
@@ -451,7 +431,7 @@ function generateToursStatisticsTableAndChart() {
 
         let bars = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         bars.id = 'bars';
-        bars.setAttribute('transform', 'translate(60, 0)');
+        bars.setAttribute('transform', 'translate(160, 0)');
 
         console.log(perUnit);
 
@@ -469,6 +449,16 @@ function generateToursStatisticsTableAndChart() {
                 bar.setAttribute('stroke', 'black');
                 bar.setAttribute('stroke-width', '1');
                 bars.appendChild(bar);
+
+                let barlabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                barlabel.setAttribute('x', `${everyPossibleStartTime.indexOf(key) * 50}`);
+                barlabel.setAttribute('y', `${1000 - (data[key] * perUnit)}`);
+                barlabel.setAttribute('text-anchor', 'middle');
+                barlabel.setAttribute('alignment-baseline', 'middle');
+                barlabel.setAttribute('font-size', '40');
+                barlabel.setAttribute('transform', `translate(15, -10)`);
+                barlabel.textContent = data[key];
+                bars.appendChild(barlabel);
             }
         }
 
